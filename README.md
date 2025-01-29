@@ -16,13 +16,13 @@ This project is a fully functional GPS Marine Trip Computer designed for boats o
 ![Alt text](images/tft.jpeg)
 
 ## Hardware Requirements
-* **Microcontroller**: ESP32 WROOM 30 pins
+* **Mrocontroller**: ESP32 WROOM 30 pins
 * **Display**: ILI9341 TFT 2.8inch 240x320
 * **GPS Module**: NEO-6M
 * **Temperature Sensor**: DS18B20
 * **4.7 kΩ pull-up resistor**
 * **PCB breadboard**: 60x40mm
-* **IC filter (inductor-capacitor filter)**: 0-50V, 2A
+* **LC filter (inductor-capacitor filter)**: 0-50V, 2A
 * **DC-DC converter**: MP1584 (Input: 4.5-28V, Output: set 3.3/5.0V, 2A)
 * **Other Components**: AWG wires, power source, connectors, screws
 
@@ -30,26 +30,26 @@ This project is a fully functional GPS Marine Trip Computer designed for boats o
 
 ## Libraries Used
 * `Arduino.h` - Core Arduino functionality.
-* `Adafruit_GFX` - Graphics library for the TFT display.
+* `Adafruit_GFX` - Graphs library for the TFT display.
 * `Adafruit_ILI9341` - ILI9341 display driver library.
 * `TinyGPS++` - GPS data parsing library.
-* `SoftwareSerial` - Serial communication for the GPS module.
+* `SoftwareSerial` - Serial communation for the GPS module.
 * `DallasTemperature` - Temperature sensor library for DS18B20.
 * `OneWire` - OneWire protocol library for DS18B20 sensor.
 * `EEPROM` - Library to read/write data from/to the EEPROM.
 
 ## Hardware Connections
 
-### IC Filter
-* Connect the **input** of the IC filter to your **power source** (e.g., 12V boat battery).
-* The IC filter is **placed before** the DC-DC converter to smooth out power supply noise.
-* **Benefits of IC Filtering:**
+###  Filter
+* Connect the **input** of the LC filter to your **power source** (e.g., 12V boat battery).
+* The LC filter is **placed before** the DC-DC converter to smooth out power supply noise.
+* **Benefits of LC Filtering:**
   * **Filters out high-frequency noise** from the engine.
   * **Prevents voltage spikes** that could damage components.
   * **Improves power stability** for reliable operation.
 
 ### DC-DC Converter (MP1584)
-1. **Connect the input** (VIN and GND) of the MP1584 to the **output of the IC filter**.
+1. **Connect the input** (VIN and GND) of the MP1584 to the **output of the LC filter**.
 2. Ensure the power source voltage is within **4.5V – 28V**.
 3. **Adjust Output Voltage:**
    * Connect a **multimeter** to the output terminals.
@@ -90,7 +90,7 @@ This project is a fully functional GPS Marine Trip Computer designed for boats o
 * **Temperature Sensor (DS18B20)**: Measures water/ambient temperature, updated every second.
 * **Display Updates**: Data is shown on the **ILI9341 TFT display**.
 * **Logging**: Distance traveled and engine runtime are logged in EEPROM to persist after power cycles.
-* **Efficient Data Updates**: Display refreshes only on significant data changes to optimize performance.
+* **Effient Data Updates**: Display refreshes only on signifant data changes to optimize performance.
 
 ## Setup and Installation
 1. **Install Libraries**: Install required libraries in Arduino IDE.
@@ -105,7 +105,7 @@ This project includes **3D files for printing** a custom case and lid for protec
 ## Future Improvements
 * **External Storage**: Add SD card support to log trip data.
 * **Mobile Connectivity**: Integrate **Bluetooth or Wi-Fi** for app-based tracking.
-* **Additional Metrics**: Implement altitude tracking and course history.
+* **Additional Metrs**: Implement altitude tracking and course history.
 
 ## Author
 **Igor Kolesnykov**
