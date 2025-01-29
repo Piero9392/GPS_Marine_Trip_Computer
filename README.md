@@ -1,83 +1,111 @@
-# GPS Speedometer for Boat 🚤
+# GPS Marine Trip Computer 🚤
 
 ![Alt text](images/general_view.jpeg)
 
-This project is a fully functional GPS speedometer designed for boats or other purposes. It displays real-time speed, direction, temperature, time, total odometer reading, total engine operating hours, and trip distance on an ILI9341 TFT display.
+This project is a fully functional GPS Marine Trip Computer designed for boats or other purposes. It displays real-time speed, direction, temperature, time, total odometer reading, total engine operating hours, and trip distance on an ILI9341 TFT display.
 
 ## Features
-* Speed Monitoring: Real-time speed display in km/h.
-* Trip and Total Odometers: Track current trip distance and total traveled distance.
-* Runtime Tracker: Records and displays the total runtime of the engine.
-* Temperature Display: Real-time water or ambient temperature measurement using a DS18B20 sensor.
-* GPS Data: Displays location-based data, including time (with timezone adjustment) and heading direction.
-* EEPROM Data Persistence: Saves total distance and runtime data to EEPROM for retrieval after a power cycle.
+* **Speed Monitoring**: Real-time speed display in km/h.
+* **Trip and Total Odometers**: Track current trip distance and total traveled distance.
+* **Runtime Tracker**: Records and displays the total runtime of the engine.
+* **Temperature Display**: Real-time water or ambient temperature measurement using a DS18B20 sensor.
+* **GPS Data**: Displays location-based data, including time (with timezone adjustment) and heading direction.
+* **EEPROM Data Persistence**: Saves total distance and runtime data to EEPROM for retrieval after a power cycle.
+* **3D Printable Case**: Includes 3D files for printing a custom case and lid.
 
 ![Alt text](images/tft.jpeg)
 
-### Hardware Requirements
-* Microcontroller: ESP32 WROOM 30 pins
-* Display: ILI9341 TFT 2.8inch 240x320
-* GPS Module: NEO-6M
-* Temperature Sensor: DS18B20
-* 4,7 kOhm pull-up resistor
-* PCB breadboard 60x40mm
-* RC filter: 0-50V, 2A
-* DC-DC converter: MP1584 4.5-28V, 2A
-* Other Components: AWG wires, power source, connectors, screws
+## Hardware Requirements
+* **Microcontroller**: ESP32 WROOM 30 pins
+* **Display**: ILI9341 TFT 2.8inch 240x320
+* **GPS Module**: NEO-6M
+* **Temperature Sensor**: DS18B20
+* **4.7 kΩ pull-up resistor**
+* **PCB breadboard**: 60x40mm
+* **IC filter (inductor-capacitor filter)**: 0-50V, 2A
+* **DC-DC converter**: MP1584 (Input: 4.5-28V, Output: set 3.3/5.0V, 2A)
+* **Other Components**: AWG wires, power source, connectors, screws
 
 ![Alt text](images/hardware.jpeg)
 
-### Libraries Used
-* Arduino.h
-* Adafruit_GFX
-* Adafruit_ILI9341
-* TinyGPS++
-* SoftwareSerial
-* DallasTemperature
-* OneWire
-* EEPROM
+## Libraries Used
+* `Arduino.h` - Core Arduino functionality.
+* `Adafruit_GFX` - Graphics library for the TFT display.
+* `Adafruit_ILI9341` - ILI9341 display driver library.
+* `TinyGPS++` - GPS data parsing library.
+* `SoftwareSerial` - Serial communication for the GPS module.
+* `DallasTemperature` - Temperature sensor library for DS18B20.
+* `OneWire` - OneWire protocol library for DS18B20 sensor.
+* `EEPROM` - Library to read/write data from/to the EEPROM.
 
-### Hardware Connections
-* 🖥 TFT Display (ILI9341) SPI-connection:
-  * MOSI: GPIO 23
-  * MISO: GPIO 19
-  * SCK: GPIO 18
-  * CS: GPIO 5
-  * RESET: GPIO 4
-  * DC: GPIO 2
-  * LED: DC-DC converter Output "+"
-  * VIN: DC-DC converter Output "+"
-  * GND: DC-DC converter Output "-"
- 
-* GPS module (Neo-6M):
-  * VCC: DC-DC converter Output "+"
-  * GND: DC-DC converter Output "-"
-  * RX: ESP32 GPIO 17
-  * TX: ESP32 GPIO 16
- 
-* Temperature sensor (DS18B20):
-  * VCC: DC-DC converter Output "+"
-  * GND: DC-DC converter Output "-"
-  * Signal:
- 
-#### How It Works
-1. The GPS module continuously streams data, which is processed using the TinyGPS++ library.
-2. Data like speed, direction, and time is extracted and displayed on the ILI9341 TFT.
-3. The DS18B20 sensor measures temperature, updated every second.
-4. Distance traveled and runtime are logged and updated persistently in EEPROM.
-5. The display updates only when there's a significant change in the data, optimizing performance.
+## Hardware Connections
 
-#### Setup and Installation
-1. Install the required libraries in your Arduino IDE.
-2. Connect the components as specified in the circuit diagram.
-3. Upload the provided code to your ESP32.
-4. Ensure the GPS module has a clear view of the sky for accurate data.
-5. Power the device and start tracking!
+### IC Filter
+* Connect the **input** of the IC filter to your **power source** (e.g., 12V boat battery).
+* The IC filter is **placed before** the DC-DC converter to smooth out power supply noise.
+* **Benefits of IC Filtering:**
+  * **Filters out high-frequency noise** from the engine.
+  * **Prevents voltage spikes** that could damage components.
+  * **Improves power stability** for reliable operation.
 
-Future Improvements
-* Add support for external storage (e.g., SD card) to log trip data.
-* Integrate Bluetooth or Wi-Fi for mobile app connectivity.
-* Implement additional metrics like altitude and course history.
+### DC-DC Converter (MP1584)
+1. **Connect the input** (VIN and GND) of the MP1584 to the **output of the IC filter**.
+2. Ensure the power source voltage is within **4.5V – 28V**.
+3. **Adjust Output Voltage:**
+   * Connect a **multimeter** to the output terminals.
+   * Turn the **adjustment potentiometer** to set the output voltage to **3.3V**.
+   * Verify the voltage **before connecting the ESP32**.
+4. Ensure the converter provides at least **500mA (preferably 1A or more)**.
 
-### Author
-Igor Kolesnykov
+⚠ **Note:** Do not power the ESP32 with **5V** unless using the dedicated **5V pin**.
+
+### Component Wiring
+
+#### 🖥 TFT Display (ILI9341) SPI-connection:
+* **MOSI**: GPIO 23
+* **MISO**: GPIO 19
+* **SCK**: GPIO 18
+* **CS**: GPIO 5
+* **RESET**: GPIO 4
+* **DC**: GPIO 2
+* **LED**: DC-DC converter Output `+`
+* **VIN**: DC-DC converter Output `+`
+* **GND**: DC-DC converter Output `-`
+
+#### 📡 GPS module (Neo-6M):
+* **VCC**: DC-DC converter Output `+`
+* **GND**: DC-DC converter Output `-`
+* **RX**: ESP32 GPIO 17 (TX2)
+* **TX**: ESP32 GPIO 16 (RX2)
+
+#### 🌡 Temperature sensor (DS18B20):
+* **VCC**: DC-DC converter Output `+`
+* **GND**: DC-DC converter Output `-`
+* **Data**: ESP32 GPIO 15
+
+⚠ **Note**: A **4.7kΩ pull-up resistor** is required between Data and VCC.
+
+## How It Works
+* **GPS Module**: Continuously streams data (speed, direction, time), processed using `TinyGPS++`.
+* **Temperature Sensor (DS18B20)**: Measures water/ambient temperature, updated every second.
+* **Display Updates**: Data is shown on the **ILI9341 TFT display**.
+* **Logging**: Distance traveled and engine runtime are logged in EEPROM to persist after power cycles.
+* **Efficient Data Updates**: Display refreshes only on significant data changes to optimize performance.
+
+## Setup and Installation
+1. **Install Libraries**: Install required libraries in Arduino IDE.
+2. **Connect Components**: Follow the wiring diagram.
+3. **Upload Code**: Flash the provided code onto the ESP32.
+4. **GPS Module**: Ensure a **clear view of the sky** for accurate tracking.
+5. **Power On**: Start tracking speed, temperature, and trip data!
+
+## 3D Printable Case
+This project includes **3D files for printing** a custom case and lid for protection and easy mounting.
+
+## Future Improvements
+* **External Storage**: Add SD card support to log trip data.
+* **Mobile Connectivity**: Integrate **Bluetooth or Wi-Fi** for app-based tracking.
+* **Additional Metrics**: Implement altitude tracking and course history.
+
+## Author
+**Igor Kolesnykov**
