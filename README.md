@@ -57,7 +57,7 @@ This project is a fully functional GPS Marine Trip Computer designed for boats o
    * Verify the voltage **before connecting the ESP32**.
 4. Ensure the converter provides at least **500mA (preferably 1A or more)**.
 
-⚠ **Note:** Do not power the ESP32 with **5V** unless using the dedicated **5V pin**.
+⚠ **Note:** Do not power the ESP32 with **5V** unless using the **5V** pin (some ESP32 modules support both **5V** and **3.3V** inputs).
 
 ### Component Wiring
 
