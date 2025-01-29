@@ -37,6 +37,29 @@ This project is a fully functional GPS speedometer designed for boats or other p
 * OneWire
 * EEPROM
 
+### Hardware Connections
+* 🖥 TFT Display (ILI9341) SPI-connection:
+  * MOSI: GPIO 23
+  * MISO: GPIO 19
+  * SCK: GPIO 18
+  * CS: GPIO 5
+  * RESET: GPIO 4
+  * DC: GPIO 2
+  * LED: DC-DC converter Output "+"
+  * VIN: DC-DC converter Output "+"
+  * GND: DC-DC converter Output "-"
+ 
+* GPS module (Neo-6M):
+  * VCC: DC-DC converter Output "+"
+  * GND: DC-DC converter Output "-"
+  * RX: ESP32 GPIO 17
+  * TX: ESP32 GPIO 16
+ 
+* Temperature sensor (DS18B20):
+  * VCC: DC-DC converter Output "+"
+  * GND: DC-DC converter Output "-"
+  * Signal:
+ 
 #### How It Works
 1. The GPS module continuously streams data, which is processed using the TinyGPS++ library.
 2. Data like speed, direction, and time is extracted and displayed on the ILI9341 TFT.
@@ -55,3 +78,6 @@ Future Improvements
 * Add support for external storage (e.g., SD card) to log trip data.
 * Integrate Bluetooth or Wi-Fi for mobile app connectivity.
 * Implement additional metrics like altitude and course history.
+
+### Author
+Igor Kolesnykov
