@@ -16,7 +16,7 @@ This project is a fully functional GPS Marine Trip Computer designed for boats o
 ![Alt text](images/tft.jpeg)
 
 ## Hardware Requirements
-* **Mrocontroller**: ESP32 WROOM 30 pins
+* **Micrcontroller**: ESP32 WROOM 30 pins
 * **Display**: ILI9341 TFT 2.8inch 240x320
 * **GPS Module**: NEO-6M
 * **Temperature Sensor**: DS18B20
