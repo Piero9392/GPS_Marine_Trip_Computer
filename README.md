@@ -62,12 +62,12 @@ This project is a fully functional GPS Marine Trip Computer designed for boats o
 ### Component Wiring
 
 #### 🖥 TFT Display (ILI9341) SPI-connection:
-* **MOSI**: GPIO 23
-* **MISO**: GPIO 19
-* **SCK**: GPIO 18
-* **CS**: GPIO 5
-* **RESET**: GPIO 4
-* **DC**: GPIO 2
+* **MOSI**: ESP32 GPIO 23
+* **MISO**: ESP32 GPIO 19
+* **SCK**: ESP32 GPIO 18
+* **CS**: ESP32 GPIO 5
+* **RESET**: ESP32 GPIO 4
+* **DC**: ESP32 GPIO 2
 * **LED**: DC-DC converter Output `+`
 * **VIN**: DC-DC converter Output `+`
 * **GND**: DC-DC converter Output `-`
