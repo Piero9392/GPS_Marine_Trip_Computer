@@ -1,6 +1,6 @@
 # GPS Speedometer for Boat 🚤
 
-![Alt text](images/general_view.jpg)
+![Alt text](images/general_view.jpeg)
 
 This project is a fully functional GPS speedometer designed for boats or other purposes. It displays real-time speed, direction, temperature, time, total odometer reading, total engine operating hours, and trip distance on an ILI9341 TFT display.
 
@@ -12,7 +12,7 @@ This project is a fully functional GPS speedometer designed for boats or other p
 * GPS Data: Displays location-based data, including time (with timezone adjustment) and heading direction.
 * EEPROM Data Persistence: Saves total distance and runtime data to EEPROM for retrieval after a power cycle.
 
-![Alt text](images/tft.jpg)
+![Alt text](images/tft.jpeg)
 
 ### Hardware Requirements
 * Microcontroller: ESP32 WROOM 30 pins
@@ -25,7 +25,7 @@ This project is a fully functional GPS speedometer designed for boats or other p
 * DC-DC converter: MP1584 4.5-28V, 2A
 * Other Components: AWG wires, power source, connectors, screws
 
-![Alt text](images/hardware.jpg)
+![Alt text](images/hardware.jpeg)
 
 ### Libraries Used
 * Arduino.h
