@@ -23,7 +23,7 @@ DallasTemperature sensors(&oneWire);
 
 unsigned long lastUpdateTime = 0;
 String lastTimeDisplay = "";
-const int timezoneOffset = 2;
+const int timezoneOffset = 2; // Time correction for Ukraininan  time zone +2h
 
 float tripDistance = 0;  // Distance for the current trip
 float totalDistance = 0; // Total distance over all sessions
@@ -44,43 +44,7 @@ void updateEEPROMData(unsigned long currentSessionMillis) {
   EEPROM.commit();
 }
 
-void displayOdometer(float distanceKm) {
-  static float lastOdometerDisplay = -1;
-  if (fabs(distanceKm - lastOdometerDisplay) > 0.1) {  // Update only if a significant change
-    char buffer[10];
-    snprintf(buffer, sizeof(buffer), "%d km", distanceKm);
-    tft.setTextSize(2);
-    tft.setTextColor(ILI9341_GREEN, ILI9341_BLACK);
-    int16_t x1, y1;
-    uint16_t w, h;
-    tft.getTextBounds(buffer, 0, 0, &x1, &y1, &w, &h);
-    tft.fillRect(5, tft.height() - 20, w, h, ILI9341_BLACK);  // Clear previous value
-    tft.setCursor(5, tft.height() - 20);
-    tft.print(buffer);
-    lastOdometerDisplay = distanceKm;
-  }
-}
-
-void displayTripOdometer(float distanceKm) {
-  static float lastTripDisplay = -1;
-  if (fabs(distanceKm - lastTripDisplay) > 0.1) {  // Update only if a significant change
-    char buffer[10];
-    snprintf(buffer, sizeof(buffer), "%.1f km", distanceKm);
-    tft.setTextSize(3);
-    tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
-    int16_t x1, y1;
-    uint16_t w, h;
-    tft.getTextBounds(buffer, 0, 0, &x1, &y1, &w, &h);
-    int centerX = (tft.width() - w) / 2;
-    int centerY = ((tft.height() + h) / 2) + 45;
-    tft.fillRect(centerX, centerY - h, w, h, ILI9341_BLACK);  // Clear previous value
-    tft.setCursor(centerX, centerY);
-    tft.print(buffer);
-    lastTripDisplay = distanceKm;
-  }
-}
-
-void displaySpeed(double speed) {
+void speed(double speed) {
   static String lastSpeedText = "";  // Track the last displayed speed
   char speedText[10];
   sprintf(speedText, "%d", (int)speed);
@@ -89,7 +53,7 @@ void displaySpeed(double speed) {
   if (lastSpeedText != currentSpeedText) {
     int16_t x1, y1;
     uint16_t w, h;
-    tft.setTextSize(10);
+    tft.setTextSize(12);
     tft.getTextBounds(speedText, 0, 0, &x1, &y1, &w, &h);
     tft.fillRect(0, (tft.height() - h) / 2 - 10, tft.width(), h + 20, ILI9341_BLACK);
 
@@ -108,30 +72,43 @@ void displaySpeed(double speed) {
   }
 }
 
-void displayTime() {
-  if (gps.time.isValid()) {
-    int hour = gps.time.hour() + timezoneOffset;
-    if (hour >= 24) {
-      hour -= 24;
-    }
-    char timeBuffer[6];
-    snprintf(timeBuffer, sizeof(timeBuffer), "%02d:%02d", hour, gps.time.minute());
-
-    if (lastTimeDisplay != String(timeBuffer)) {
-      tft.setTextSize(3);
-      tft.setTextColor(ILI9341_YELLOW, ILI9341_BLACK);
-      int16_t x1, y1;
-      uint16_t w, h;
-      tft.getTextBounds(timeBuffer, 0, 0, &x1, &y1, &w, &h);
-      tft.fillRect((tft.width() - w) / 2, 5, w, h, ILI9341_BLACK);
-      tft.setCursor((tft.width() - w) / 2, 5);
-      tft.print(timeBuffer);
-      lastTimeDisplay = String(timeBuffer);
-    }
+void tripOdometer(float distanceKm) {
+  static float lastTripDisplay = -1.0;
+  if (fabs(distanceKm - lastTripDisplay) > 0.1) {  // Update only if a significant change
+    char buffer[10];
+    snprintf(buffer, sizeof(buffer), "%.1f km", distanceKm);
+    tft.setTextSize(3);
+    tft.setTextColor(ILI9341_WHITE, ILI9341_BLACK);
+    int16_t x1, y1;
+    uint16_t w, h;
+    tft.getTextBounds(buffer, 0, 0, &x1, &y1, &w, &h);
+    int centerX = (tft.width() - w) / 2;
+    int centerY = ((tft.height() + h) / 2) + 45;
+    tft.fillRect(centerX, centerY - h, w, h, ILI9341_BLACK);  // Clear previous value
+    tft.setCursor(centerX, centerY);
+    tft.print(buffer);
+    lastTripDisplay = distanceKm;
   }
 }
 
-void displayTotalRuntime() {
+void totalOdometer(float distanceKm) {
+  static float lastOdometerDisplay = -1.0;
+  if (fabs(distanceKm - lastOdometerDisplay) > 0.1) {  // Update only if a significant change
+    char buffer[10];
+    snprintf(buffer, sizeof(buffer), "%.1f km", distanceKm);
+    tft.setTextSize(2);
+    tft.setTextColor(ILI9341_GREEN, ILI9341_BLACK);
+    int16_t x1, y1;
+    uint16_t w, h;
+    tft.getTextBounds(buffer, 0, 0, &x1, &y1, &w, &h);
+    tft.fillRect(5, tft.height() - 20, w, h, ILI9341_BLACK);  // Clear previous value
+    tft.setCursor(5, tft.height() - 20);
+    tft.print(buffer);
+    lastOdometerDisplay = distanceKm;
+  }
+}
+
+void totalRuntime() {
   static String lastRuntimeDisplay = "";  // Track the last displayed runtime
   unsigned long totalMinutes = totalRuntimeMillis / 60000;
   unsigned long hours = totalMinutes / 60;
@@ -154,7 +131,30 @@ void displayTotalRuntime() {
   }
 }
 
-void displayDirection() {
+void time() {
+  if (gps.time.isValid()) {
+    int hour = gps.time.hour() + timezoneOffset; // Time zone correction (for Ukraine +2 hours)
+    if (hour >= 24) {
+      hour -= 24;
+    }
+    char timeBuffer[6];
+    snprintf(timeBuffer, sizeof(timeBuffer), "%02d:%02d", hour, gps.time.minute());
+
+    if (lastTimeDisplay != String(timeBuffer)) {
+      tft.setTextSize(4);
+      tft.setTextColor(ILI9341_YELLOW, ILI9341_BLACK);
+      int16_t x1, y1;
+      uint16_t w, h;
+      tft.getTextBounds(timeBuffer, 0, 0, &x1, &y1, &w, &h);
+      tft.fillRect((tft.width() - w) / 2, 5, w, h, ILI9341_BLACK);
+      tft.setCursor((tft.width() - w) / 2, 5);
+      tft.print(timeBuffer);
+      lastTimeDisplay = String(timeBuffer);
+    }
+  }
+}
+
+void direction() {
   if (gps.course.isValid()) {
     String direction;
     double course = gps.course.deg();
@@ -170,7 +170,7 @@ void displayDirection() {
 
     static String lastDirectionDisplay = "";
     if (lastDirectionDisplay != direction) {
-      tft.setTextSize(3);
+      tft.setTextSize(4);
       tft.setTextColor(ILI9341_RED, ILI9341_BLACK);
       int16_t x1, y1;
       uint16_t w, h;
@@ -183,17 +183,17 @@ void displayDirection() {
   }
 }
 
-void displayTemperature() {
+void temperature() {
   sensors.requestTemperatures();
   float tempC = sensors.getTempCByIndex(0);
   static int lastTemperature = -999;
   static unsigned long lastTempUpdateTime = 0;
   int currentTemperature = static_cast<int>(round(tempC));
 
-  if (abs(currentTemperature - lastTemperature) >= 1 || (millis() - lastTempUpdateTime >= 1000)) {
+  if (abs(currentTemperature - lastTemperature) >= 1 && (millis() - lastTempUpdateTime >= 1000)) {
     char tempBuffer[10];
     snprintf(tempBuffer, sizeof(tempBuffer), "%dC", currentTemperature);
-    tft.setTextSize(3);
+    tft.setTextSize(4);
     tft.setTextColor(ILI9341_RED, ILI9341_BLACK); 
 
     int16_t x1, y1;
@@ -212,7 +212,7 @@ void displayTemperature() {
     lastTempUpdateTime = millis();
   }
 }
-
+  
 void setup() {
   Serial.begin(115200);
   gpsSerial.begin(9600, SERIAL_8N1, 16, 17);
@@ -238,9 +238,9 @@ void loop() {
   unsigned long currentMillis = millis();
   
   // Always display temperature, total runtime, and odometer (using totalDistance)
-  displayTemperature();
-  displayTotalRuntime();
-  displayOdometer(totalDistance);
+  temperature();
+  totalRuntime();
+  totalOdometer(totalDistance);
 
   if (gps.location.isUpdated()) {
     unsigned long elapsedMillis = currentMillis - lastUpdateTime;
@@ -249,10 +249,10 @@ void loop() {
     totalDistance += distanceIncrement;
     lastUpdateTime = currentMillis;
 
-    displaySpeed(gps.speed.kmph());
-    displayTripOdometer(tripDistance);
-    displayTime();
-    displayDirection();
+    speed(gps.speed.kmph());
+    tripOdometer(tripDistance);
+    time();
+    direction();
   }
 
   // Save runtime data every 10 seconds
